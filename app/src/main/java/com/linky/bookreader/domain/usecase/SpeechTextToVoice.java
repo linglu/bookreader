@@ -48,4 +48,25 @@ public class SpeechTextToVoice {
     public void startRead(String text, SynthesizerListener mTtsListener) {
         mTts.startSpeaking(text, mTtsListener);
     }
+
+    /**
+     * 停止朗读
+     */
+    public void stopRead() {
+        mTts.stopSpeaking();
+    }
+
+    /**
+     * 暂停朗读
+     */
+    public void pauseRead() {
+        mTts.pauseSpeaking();
+    }
+
+    /**
+     * 继续朗读
+     */
+    public void resumeRead() {
+        mTts.resumeSpeaking();
+    }
 }

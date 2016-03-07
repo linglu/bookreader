@@ -19,8 +19,8 @@ public class BookReaderUsecaseController implements BookReaderUsecase {
     }
 
     @Override
-    public Observable<String> getNextTextBlock() {
-        return mBookReaderAPI.getNextTextBlock()
+    public Observable<String> getNextTextBlock(int lastPosition, int blockSize) {
+        return mBookReaderAPI.getNextTextBlock(lastPosition, blockSize)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

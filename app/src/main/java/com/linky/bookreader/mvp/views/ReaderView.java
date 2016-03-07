@@ -3,7 +3,7 @@ package com.linky.bookreader.mvp.views;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.linky.bookreader.R;
 
@@ -13,7 +13,7 @@ import com.linky.bookreader.R;
 public class ReaderView implements BaseView {
 
     private View mRootView;
-    private EditText mEtText;
+    private TextView mTvContent;
     private OnActionListener mOnActionListener;
 
     @Override
@@ -28,10 +28,22 @@ public class ReaderView implements BaseView {
     }
 
     private void initViews(View view) {
-        mEtText = (EditText) view.findViewById(R.id.et_text);
+        mTvContent = (TextView) view.findViewById(R.id.tv_content);
+
         view.findViewById(R.id.btn_read).setOnClickListener(v -> {
-            String text = mEtText.getText().toString();
-            mOnActionListener.onRead(text);
+            mOnActionListener.onRead();
+        });
+
+        view.findViewById(R.id.btn_pause).setOnClickListener(v -> {
+            mOnActionListener.onPause();
+        });
+
+        view.findViewById(R.id.btn_continue).setOnClickListener(v -> {
+            mOnActionListener.onContinue();
+        });
+
+        view.findViewById(R.id.btn_stop).setOnClickListener(v -> {
+            mOnActionListener.onStop();
         });
     }
 
@@ -39,7 +51,17 @@ public class ReaderView implements BaseView {
         this.mOnActionListener = onActionListener;
     }
 
+    /**
+     * 显示正在阅读的文本
+     */
+    public void setReadingText(String text) {
+        mTvContent.setText(text);
+    }
+
     public interface OnActionListener {
-        void onRead(String text);
+        void onRead();
+        void onPause();
+        void onContinue();
+        void onStop();
     }
 }

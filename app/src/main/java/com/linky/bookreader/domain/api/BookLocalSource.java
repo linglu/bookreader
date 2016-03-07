@@ -2,7 +2,6 @@ package com.linky.bookreader.domain.api;
 
 import android.os.Environment;
 
-import com.linky.bookreader.support.utils.SettingInfo;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -24,7 +23,7 @@ public class BookLocalSource implements BookReaderAPI {
     }
 
     @Override
-    public Observable<String> getNextTextBlock() {
+    public Observable<String> getNextTextBlock(int lastPosition, int blockSize) {
         return Observable.create(subscriber -> {
             // TODO: 从 TXT 中获取下一段要读的文本；
 
@@ -40,8 +39,6 @@ public class BookLocalSource implements BookReaderAPI {
                     subscriber.onError(new Exception("文件不存在"));
                 } else {
 
-                    int lastPosition = SettingInfo.getLastPosition();
-                    int blockSize = SettingInfo.getTextBlockSize();
                     MappedByteBuffer buffer = createMappedByteBuffer(file, lastPosition, blockSize);
 
                     if (buffer != null) {
@@ -53,9 +50,6 @@ public class BookLocalSource implements BookReaderAPI {
                             }
 
                             String s = new String(array, "UTF-8");
-
-                            lastPosition += blockSize;
-                            SettingInfo.setLastPosition(lastPosition);
 
                             subscriber.onNext(s);
                             subscriber.onCompleted();

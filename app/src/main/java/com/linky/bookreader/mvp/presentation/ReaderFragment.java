@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SynthesizerListener;
-import com.linky.bookreader.R;
 import com.linky.bookreader.callback.DefaultSubscriber;
 import com.linky.bookreader.dagger.provider.UsecaseProvider;
 import com.linky.bookreader.dao.config.SpeechConstants;
@@ -13,11 +12,12 @@ import com.linky.bookreader.domain.usecase.BookReaderUsecase;
 import com.linky.bookreader.domain.usecase.SpeechTextToVoice;
 import com.linky.bookreader.mvp.BaseFragmentPresenter;
 import com.linky.bookreader.mvp.views.ReaderView;
-import com.linky.bookreader.support.utils.ResUtils;
+import com.linky.bookreader.support.utils.SettingInfo;
 import com.linky.bookreader.support.utils.ToastUtils;
 
 /**
  * Created by Linky on 16-2-3.
+ *
  */
 public class ReaderFragment extends BaseFragmentPresenter<ReaderView> {
 
@@ -62,22 +62,26 @@ public class ReaderFragment extends BaseFragmentPresenter<ReaderView> {
         @Override
         public void onBufferProgress(int percent, int beginPos, int endPos, String info) {
             mBuffPercent = percent;
-            ToastUtils.showToast(ResUtils.getString(R.string.toast_tts_format, mBuffPercent, mPlayPercent));
+//            ToastUtils.showToast(ResUtils.getString(R.string.toast_tts_format, mBuffPercent, mPlayPercent));
         }
 
         // 播放进度
         @Override
         public void onSpeakProgress(int percent, int beginPos, int endPos) {
             mPlayPercent = percent;
-            ToastUtils.showToast(ResUtils.getString(R.string.toast_tts_format, mBuffPercent, mPlayPercent));
+//            ToastUtils.showToast(ResUtils.getString(R.string.toast_tts_format, mBuffPercent, mPlayPercent));
         }
 
         @Override
         public void onCompleted(SpeechError error) {
             if (error == null) {
-                ToastUtils.showToast("播放完成");
+//                ToastUtils.showToast("播放完成");
+                int lastPosition = SettingInfo.getLastPosition();
+                int blockSize = SettingInfo.getTextBlockSize();
+                lastPosition += blockSize;
+                SettingInfo.setLastPosition(lastPosition);
 
-                readBook();
+                readBook(lastPosition, blockSize);
             } else {
                 ToastUtils.showToast(error.getPlainDescription(true));
             }
@@ -89,13 +93,32 @@ public class ReaderFragment extends BaseFragmentPresenter<ReaderView> {
         }
     };
 
+    private ReaderView.OnActionListener mOnActionListener = new ReaderView.OnActionListener() {
+        @Override
+        public void onRead() {
+            int lastPosition = SettingInfo.getLastPosition();
+            int blockSize = SettingInfo.getTextBlockSize();
+            readBook(lastPosition, blockSize);
+        }
 
-    private ReaderView.OnActionListener mOnActionListener = text -> {
-        readBook();
+        @Override
+        public void onPause() {
+            mSpeechTextToVoice.pauseRead();
+        }
+
+        @Override
+        public void onContinue() {
+            mSpeechTextToVoice.resumeRead();
+        }
+
+        @Override
+        public void onStop() {
+            mSpeechTextToVoice.stopRead();
+        }
     };
 
-    private void readBook() {
-        mBookReaderUsecase.getNextTextBlock()
+    private void readBook(int lastPosition, int blockSize) {
+        mBookReaderUsecase.getNextTextBlock(lastPosition, blockSize)
                 .compose(bindToLifecycle())
                 .subscribe(new DefaultSubscriber<String>(){
 
@@ -103,6 +126,7 @@ public class ReaderFragment extends BaseFragmentPresenter<ReaderView> {
                     public void onNext(String s) {
                         super.onNext(s);
                         Log.e("TAG", s);
+                        bv.setReadingText(s);
                         mSpeechTextToVoice.startRead(s, mTtsListener);
                     }
 

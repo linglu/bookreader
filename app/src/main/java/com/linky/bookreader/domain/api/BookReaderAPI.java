@@ -7,5 +7,5 @@ import rx.Observable;
  */
 public interface BookReaderAPI {
 
-    Observable<String> getNextTextBlock();
+    Observable<String> getNextTextBlock(int lastPosition, int blockSize);
 }

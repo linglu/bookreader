@@ -13,5 +13,8 @@
     <string name="label_copy_to_clipboard">复制到粘贴板</string>
 
     <string name="label_begin_read">开始朗读</string>
+    <string name="label_pause">暂停</string>
+    <string name="label_continue">继续</string>
+    <string name="label_stop">停止</string>
 
 </resources>
