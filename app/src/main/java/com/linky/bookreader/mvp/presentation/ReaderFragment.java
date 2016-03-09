@@ -12,6 +12,7 @@ import com.linky.bookreader.domain.usecase.BookReaderUsecase;
 import com.linky.bookreader.domain.usecase.SpeechTextToVoice;
 import com.linky.bookreader.mvp.BaseFragmentPresenter;
 import com.linky.bookreader.mvp.views.ReaderView;
+import com.linky.bookreader.support.utils.ClipboardUtil;
 import com.linky.bookreader.support.utils.SettingInfo;
 import com.linky.bookreader.support.utils.ToastUtils;
 
@@ -23,6 +24,7 @@ public class ReaderFragment extends BaseFragmentPresenter<ReaderView> {
 
     private SpeechTextToVoice mSpeechTextToVoice;
     private BookReaderUsecase mBookReaderUsecase;
+    private ClipboardUtil mClipBoard;
 
     private int mBuffPercent;   // 合成进度
     private int mPlayPercent;   // 播放进度
@@ -39,6 +41,18 @@ public class ReaderFragment extends BaseFragmentPresenter<ReaderView> {
         mSpeechTextToVoice = new SpeechTextToVoice(getActivity());
         mSpeechTextToVoice.initParameters(SpeechConstants.reader, SpeechConstants.speed, SpeechConstants.pitch, SpeechConstants.volume);
         bv.setOnActionListener(mOnActionListener);
+    }
+
+    @Override
+    protected void afterBindData() {
+
+
+
+        // TODO: 将剪贴板中的文本显示出来
+
+
+
+
     }
 
     private SynthesizerListener mTtsListener = new SynthesizerListener() {
@@ -140,11 +154,6 @@ public class ReaderFragment extends BaseFragmentPresenter<ReaderView> {
                         super.onCompleted();
                     }
                 });
-    }
-
-    @Override
-    protected void afterBindData() {
-
     }
 
     @Override

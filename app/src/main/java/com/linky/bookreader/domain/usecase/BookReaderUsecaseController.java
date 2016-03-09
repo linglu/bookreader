@@ -1,6 +1,10 @@
 package com.linky.bookreader.domain.usecase;
 
+import android.content.Context;
+
+import com.linky.bookreader.dao.orm.EbookBean;
 import com.linky.bookreader.domain.api.BookReaderAPI;
+import com.linky.bookreader.support.utils.ClipboardUtil;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,5 +27,12 @@ public class BookReaderUsecaseController implements BookReaderUsecase {
         return mBookReaderAPI.getNextTextBlock(lastPosition, blockSize)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<EbookBean> getTextFromClipboard(Context context) {
+        ClipboardUtil mClipBoard = new ClipboardUtil(context);
+        String text = mClipBoard.getTextFromClipBoard();
+        return null;
     }
 }

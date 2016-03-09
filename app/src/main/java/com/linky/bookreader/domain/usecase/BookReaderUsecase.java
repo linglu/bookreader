@@ -1,5 +1,9 @@
 package com.linky.bookreader.domain.usecase;
 
+import android.content.Context;
+
+import com.linky.bookreader.dao.orm.EbookBean;
+
 import rx.Observable;
 
 /**
@@ -8,4 +12,5 @@ import rx.Observable;
 public interface BookReaderUsecase {
 
     Observable<String> getNextTextBlock(int lastPosition, int blockSize);
+    Observable<EbookBean> getTextFromClipboard(Context context);
 }

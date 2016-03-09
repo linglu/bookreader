@@ -1,4 +1,4 @@
-package com.linky.greendaogenerator;
+package com.linky;
 
 import java.io.File;
 import java.io.FileNotFoundException;
